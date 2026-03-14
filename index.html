@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Efsane Çevreci HD - Final</title>
+    <style>
+        body { margin: 0; background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        #header { margin-bottom: 15px; text-align: center; }
+        #message { font-size: 30px; color: #00ff00; font-weight: bold; text-shadow: 0 0 10px #000; min-height: 40px; }
+        .canvas-container { border: 6px solid #333; box-shadow: 0 0 50px rgba(0,255,0,0.2); position: relative; }
+        canvas { display: block; max-width: 90vw; max-height: 70vh; cursor: crosshair; }
+        @keyframes firework { 
+            0% { transform: scale(1); opacity: 1; } 
+            100% { transform: scale(3); opacity: 0; } 
+        }
+        .confetti { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: firework 1s ease-out infinite; pointer-events: none; z-index: 1000; }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <h1 id="title">BÖLÜM 1: PARKLARI TEMİZLE</h1>
+        <div id="message">Bulunan: <span id="foundCount">0</span> / <span id="totalCount">5</span></div>
+    </div>
+
+    <div class="canvas-container" id="container">
+        <canvas id="gameCanvas" width="1920" height="1080"></canvas>
+    </div>
+
+    <audio id="winSound" src="alkis.mp3" preload="auto"></audio>
+    <audio id="levelSound" src="tık.mp3" preload="auto"></audio>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const winSound = document.getElementById('winSound');
+        const levelSound = document.getElementById('levelSound');
+        
+        let found = 0;
+        let currentLevel = 1;
+        let activeTargets = [];
+        const gameImg = new Image();
+
+        // BÖLÜMLER VE KOORDİNATLAR
+        const levels = [
+            { title: "BÖLÜM 1: PARKLAR", img: "oyun1.png", targets: [{x: 1184, y: 687, r:60}, {x:1221, y:1002, r:60}, {x:1439, y:884, r:60}, {x: 1791, y: 715, r:60}, {x: 1752, y: 958, r:60}] },
+            { title: "BÖLÜM 2: ORMANLAR", img: "oyun2.png", targets: [{x: 1154, y: 463, r:50}, {x: 1100, y: 652, r:50}, {x: 1276, y: 756, r:50}, {x: 1256, y: 965, r:50}, {x: 1732, y: 765, r:50}] },
+            { title: "BÖLÜM 3: SAHİLLER", img: "oyun3.png", targets: [{x: 1602, y: 421, r:300}, {x: 1378, y: 606, r:40}, {x: 1093, y: 680, r:40}, {x: 1728, y: 645, r:40}, {x: 1415, y: 465, r:40}] },
+            { title: "BÖLÜM 4: KUTUPLAR", img: "oyun4.png", targets: [{x: 1549, y: 600, r:35}, {x: 1775, y: 841, r:35}, {x: 1484, y: 793, r:35}, {x: 1145, y: 982, r:35}, {x: 1263, y: 984, r:35}, {x: 1123, y: 684, r:35}] }
+        ];
+
+        function loadLevel(lv) {
+            found = 0;
+            const levelData = levels[lv-1];
+            activeTargets = JSON.parse(JSON.stringify(levelData.targets));
+            
+            document.getElementById('foundCount').innerText = 0;
+            document.getElementById('totalCount').innerText = activeTargets.length;
+            document.getElementById('title').innerText = levelData.title;
+            gameImg.src = levelData.img;
+        }
+
+        gameImg.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(gameImg, 0, 0, 1920, 1080);
+        };
+
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left) * (1920 / rect.width);
+            const mouseY = (e.clientY - rect.top) * (1080 / rect.height);
+
+            if (mouseX < 960) return; // Sol tarafa tıklarsa işlem yapma
+
+            activeTargets.forEach(t => {
+                if (!t.found && Math.hypot(t.x - mouseX, t.y - mouseY) < t.r) {
+                    t.found = true;
+                    found++;
+                    
+                    // Ses ve İşaretleme
+                    levelSound.currentTime = 0;
+                    levelSound.play().catch(()=>{});
+                    
+                    document.getElementById('foundCount').innerText = found;
+                    drawMark(t.x, t.y, "yellow");
+                    drawMark(t.x - 960, t.y, "lime");
+
+                    if (found === activeTargets.length) {
+                        if (currentLevel < levels.length) {
+                            currentLevel++;
+                            setTimeout(() => loadLevel(currentLevel), 1000);
+                        } else {
+                            victory();
+                        }
+                    }
+                }
+            });
+        });
+
+        function drawMark(x, y, color) {
+            ctx.strokeStyle = color; ctx.lineWidth = 12;
+            ctx.beginPath(); ctx.arc(x, y, 50, 0, Math.PI * 2); ctx.stroke();
+        }
+
+        function victory() {
+            winSound.currentTime = 0;
+            winSound.play().catch(e => console.log("Final sesi hatası:", e));
+
+            document.getElementById('message').innerHTML = "🏆 DOĞA KURTARILDI! HARİKASIN!";
+            
+            for(let i=0; i<60; i++) {
+                let d = document.createElement('div');
+                d.className = 'confetti';
+                d.style.left = Math.random() * 100 + "vw";
+                d.style.top = Math.random() * 100 + "vh";
+                d.style.background = `hsl(${Math.random()*360}, 100%, 50%)`;
+                document.body.appendChild(d);
+            }
+        }
+
+        // İlk tıklamada seslerin kilidini aç (Chrome kuralı)
+        document.body.addEventListener('mousedown', () => {
+            levelSound.load();
+            winSound.load();
+        }, { once: true });
+
+        loadLevel(1);
+    </script>
+</body>
+</html>
