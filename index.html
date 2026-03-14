@@ -66,9 +66,9 @@
 
         const levels = [
             { title: "BÖLÜM 1: PARKLAR", img: "oyun1.png", targets: [{x: 1184, y: 687, r:60}, {x:1221, y:1002, r:60}, {x:1439, y:884, r:60}, {x: 1791, y: 715, r:60}, {x: 1752, y: 958, r:60}] },
-            { title: "BÖLÜM 2: DENİZLER", img: "oyun2.png", targets: [{x: 1154, y: 463, r:50}, {x: 1100, y: 652, r:50}, {x: 1276, y: 756, r:50}, {x: 1256, y: 965, r:50}, {x: 1732, y: 765, r:50}] },
-            { title: "BÖLÜM 3: ORMANLAR", img: "oyun3.png", targets: [{x: 1602, y: 421, r:45}, {x: 1378, y: 606, r:45}, {x: 1093, y: 680, r:45}, {x: 1728, y: 645, r:45}, {x: 1415, y: 465, r:45}] },
-            { title: "BÖLÜM 4: ŞEHİRLER", img: "oyun4.png", targets: [{x: 1549, y: 600, r:40}, {x: 1775, y: 841, r:40}, {x: 1484, y: 793, r:40}, {x: 1145, y: 982, r:40}, {x: 1263, y: 984, r:40}, {x: 1123, y: 684, r:40}] }
+            { title: "BÖLÜM 2: ORMANLAR", img: "oyun2.png", targets: [{x: 1154, y: 463, r:50}, {x: 1100, y: 652, r:50}, {x: 1276, y: 756, r:50}, {x: 1256, y: 965, r:50}, {x: 1732, y: 765, r:50}] },
+            { title: "BÖLÜM 3: SAHİLLER", img: "oyun3.png", targets: [{x: 1602, y: 421, r:45}, {x: 1378, y: 606, r:45}, {x: 1093, y: 680, r:45}, {x: 1728, y: 645, r:45}, {x: 1415, y: 465, r:45}] },
+            { title: "BÖLÜM 4: KUTUPLAR", img: "oyun4.png", targets: [{x: 1549, y: 600, r:40}, {x: 1775, y: 841, r:40}, {x: 1484, y: 793, r:40}, {x: 1145, y: 982, r:40}, {x: 1263, y: 984, r:40}, {x: 1123, y: 684, r:40}] }
         ];
 
         function loadLevel(lv) {
@@ -134,7 +134,7 @@
         function victory() {
             winSound.currentTime = 0;
             winSound.play().catch(()=>{});
-            document.getElementById('message').innerHTML = "🏆 DÜNYA KURTARILDI!";
+            document.getElementById('message').innerHTML = "🏆 DÜNYA KURTARILDI! HARİKASIN!";
             for(let i=0; i<60; i++) {
                 let d = document.createElement('div');
                 d.className = 'confetti';
