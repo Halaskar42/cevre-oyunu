@@ -2,13 +2,36 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Efsane Çevreci HD - Final</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Efsane Çevreci HD - Mobil Uyumlu</title>
     <style>
-        body { margin: 0; background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        #header { margin-bottom: 15px; text-align: center; }
-        #message { font-size: 30px; color: #00ff00; font-weight: bold; text-shadow: 0 0 10px #000; min-height: 40px; }
-        .canvas-container { border: 6px solid #333; box-shadow: 0 0 50px rgba(0,255,0,0.2); position: relative; }
-        canvas { display: block; max-width: 90vw; max-height: 70vh; cursor: crosshair; }
+        body { 
+            margin: 0; 
+            background: #0a0a0a; 
+            color: white; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            overflow: hidden; 
+            touch-action: manipulation; /* Mobilde çift tık zoom'u engeller */
+        }
+        #header { margin-bottom: 10px; text-align: center; width: 100%; }
+        #message { font-size: clamp(18px, 4vw, 30px); color: #00ff00; font-weight: bold; text-shadow: 0 0 10px #000; min-height: 35px; }
+        .canvas-container { border: 4px solid #333; box-shadow: 0 0 30px rgba(0,255,0,0.2); position: relative; background: #000; }
+        
+        /* Ekranı kaplaması için dinamik genişlik */
+        canvas { 
+            display: block; 
+            max-width: 95vw; 
+            max-height: 75vh; 
+            height: auto; 
+            width: auto;
+            cursor: crosshair; 
+        }
+
         @keyframes firework { 
             0% { transform: scale(1); opacity: 1; } 
             100% { transform: scale(3); opacity: 0; } 
@@ -19,7 +42,7 @@
 <body>
 
     <div id="header">
-        <h1 id="title">BÖLÜM 1: PARKLARI TEMİZLE</h1>
+        <h1 id="title" style="font-size: clamp(16px, 5vw, 24px); margin: 5px;">BÖLÜM 1: PARKLAR</h1>
         <div id="message">Bulunan: <span id="foundCount">0</span> / <span id="totalCount">5</span></div>
     </div>
 
@@ -41,12 +64,11 @@
         let activeTargets = [];
         const gameImg = new Image();
 
-        // BÖLÜMLER VE KOORDİNATLAR
         const levels = [
             { title: "BÖLÜM 1: PARKLAR", img: "oyun1.png", targets: [{x: 1184, y: 687, r:60}, {x:1221, y:1002, r:60}, {x:1439, y:884, r:60}, {x: 1791, y: 715, r:60}, {x: 1752, y: 958, r:60}] },
-            { title: "BÖLÜM 2: ORMANLAR", img: "oyun2.png", targets: [{x: 1154, y: 463, r:50}, {x: 1100, y: 652, r:50}, {x: 1276, y: 756, r:50}, {x: 1256, y: 965, r:50}, {x: 1732, y: 765, r:50}] },
-            { title: "BÖLÜM 3: SAHİLLER", img: "oyun3.png", targets: [{x: 1602, y: 421, r:300}, {x: 1378, y: 606, r:40}, {x: 1093, y: 680, r:40}, {x: 1728, y: 645, r:40}, {x: 1415, y: 465, r:40}] },
-            { title: "BÖLÜM 4: KUTUPLAR", img: "oyun4.png", targets: [{x: 1549, y: 600, r:35}, {x: 1775, y: 841, r:35}, {x: 1484, y: 793, r:35}, {x: 1145, y: 982, r:35}, {x: 1263, y: 984, r:35}, {x: 1123, y: 684, r:35}] }
+            { title: "BÖLÜM 2: DENİZLER", img: "oyun2.png", targets: [{x: 1154, y: 463, r:50}, {x: 1100, y: 652, r:50}, {x: 1276, y: 756, r:50}, {x: 1256, y: 965, r:50}, {x: 1732, y: 765, r:50}] },
+            { title: "BÖLÜM 3: ORMANLAR", img: "oyun3.png", targets: [{x: 1602, y: 421, r:45}, {x: 1378, y: 606, r:45}, {x: 1093, y: 680, r:45}, {x: 1728, y: 645, r:45}, {x: 1415, y: 465, r:45}] },
+            { title: "BÖLÜM 4: ŞEHİRLER", img: "oyun4.png", targets: [{x: 1549, y: 600, r:40}, {x: 1775, y: 841, r:40}, {x: 1484, y: 793, r:40}, {x: 1145, y: 982, r:40}, {x: 1263, y: 984, r:40}, {x: 1123, y: 684, r:40}] }
         ];
 
         function loadLevel(lv) {
@@ -65,19 +87,23 @@
             ctx.drawImage(gameImg, 0, 0, 1920, 1080);
         };
 
-        canvas.addEventListener('mousedown', (e) => {
+        // Hem tıklama hem dokunma desteği
+        function handleInput(e) {
             const rect = canvas.getBoundingClientRect();
-            const mouseX = (e.clientX - rect.left) * (1920 / rect.width);
-            const mouseY = (e.clientY - rect.top) * (1080 / rect.height);
+            // Dokunma (Touch) veya Tıklama (Mouse) koordinatını al
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            if (mouseX < 960) return; // Sol tarafa tıklarsa işlem yapma
+            const mouseX = (clientX - rect.left) * (1920 / rect.width);
+            const mouseY = (clientY - rect.top) * (1080 / rect.height);
+
+            if (mouseX < 960) return; // Sol tarafı koruma altına aldık, cırt yok
 
             activeTargets.forEach(t => {
                 if (!t.found && Math.hypot(t.x - mouseX, t.y - mouseY) < t.r) {
                     t.found = true;
                     found++;
                     
-                    // Ses ve İşaretleme
                     levelSound.currentTime = 0;
                     levelSound.play().catch(()=>{});
                     
@@ -88,14 +114,17 @@
                     if (found === activeTargets.length) {
                         if (currentLevel < levels.length) {
                             currentLevel++;
-                            setTimeout(() => loadLevel(currentLevel), 1000);
+                            setTimeout(() => loadLevel(currentLevel), 800);
                         } else {
                             victory();
                         }
                     }
                 }
             });
-        });
+        }
+
+        canvas.addEventListener('mousedown', handleInput);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(e); }, {passive: false});
 
         function drawMark(x, y, color) {
             ctx.strokeStyle = color; ctx.lineWidth = 12;
@@ -104,10 +133,8 @@
 
         function victory() {
             winSound.currentTime = 0;
-            winSound.play().catch(e => console.log("Final sesi hatası:", e));
-
-            document.getElementById('message').innerHTML = "🏆 DOĞA KURTARILDI! HARİKASIN!";
-            
+            winSound.play().catch(()=>{});
+            document.getElementById('message').innerHTML = "🏆 DÜNYA KURTARILDI!";
             for(let i=0; i<60; i++) {
                 let d = document.createElement('div');
                 d.className = 'confetti';
@@ -118,10 +145,8 @@
             }
         }
 
-        // İlk tıklamada seslerin kilidini aç (Chrome kuralı)
         document.body.addEventListener('mousedown', () => {
-            levelSound.load();
-            winSound.load();
+            levelSound.load(); winSound.load();
         }, { once: true });
 
         loadLevel(1);
