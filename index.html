@@ -3,39 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Efsane Çevreci HD - Mobil Uyumlu</title>
+    <title>Efsane Çevreci 7 Bölüm - HD</title>
     <style>
         body { 
-            margin: 0; 
-            background: #0a0a0a; 
-            color: white; 
-            font-family: 'Segoe UI', sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            overflow: hidden; 
-            touch-action: manipulation; /* Mobilde çift tık zoom'u engeller */
+            margin: 0; background: #0a0a0a; color: white; font-family: 'Segoe UI', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; overflow: hidden; touch-action: manipulation;
         }
         #header { margin-bottom: 10px; text-align: center; width: 100%; }
         #message { font-size: clamp(18px, 4vw, 30px); color: #00ff00; font-weight: bold; text-shadow: 0 0 10px #000; min-height: 35px; }
         .canvas-container { border: 4px solid #333; box-shadow: 0 0 30px rgba(0,255,0,0.2); position: relative; background: #000; }
-        
-        /* Ekranı kaplaması için dinamik genişlik */
-        canvas { 
-            display: block; 
-            max-width: 95vw; 
-            max-height: 75vh; 
-            height: auto; 
-            width: auto;
-            cursor: crosshair; 
-        }
-
-        @keyframes firework { 
-            0% { transform: scale(1); opacity: 1; } 
-            100% { transform: scale(3); opacity: 0; } 
-        }
+        canvas { display: block; max-width: 95vw; max-height: 75vh; height: auto; width: auto; cursor: crosshair; }
+        @keyframes firework { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
         .confetti { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: firework 1s ease-out infinite; pointer-events: none; z-index: 1000; }
     </style>
 </head>
@@ -43,7 +22,7 @@
 
     <div id="header">
         <h1 id="title" style="font-size: clamp(16px, 5vw, 24px); margin: 5px;">BÖLÜM 1: PARKLAR</h1>
-        <div id="message">Bulunan: <span id="foundCount">0</span> / <span id="totalCount">5</span></div>
+        <div id="message">Bulunan: <span id="foundCount">0</span> / <span id="totalCount">8</span></div>
     </div>
 
     <div class="canvas-container" id="container">
@@ -65,17 +44,64 @@
         const gameImg = new Image();
 
         const levels = [
-            { title: "BÖLÜM 1: PARKLAR", img: "oyun1.png", targets: [{x: 1184, y: 687, r:60}, {x:1221, y:1002, r:60}, {x:1439, y:884, r:60}, {x: 1791, y: 715, r:60}, {x: 1752, y: 958, r:60}] },
-            { title: "BÖLÜM 2: ORMANLAR", img: "oyun2.png", targets: [{x: 1154, y: 463, r:50}, {x: 1100, y: 652, r:50}, {x: 1276, y: 756, r:50}, {x: 1256, y: 965, r:50}, {x: 1732, y: 765, r:50}] },
-            { title: "BÖLÜM 3: SAHİLLER", img: "oyun3.png", targets: [{x: 1602, y: 421, r:45}, {x: 1378, y: 606, r:45}, {x: 1093, y: 680, r:45}, {x: 1728, y: 645, r:45}, {x: 1415, y: 465, r:45}] },
-            { title: "BÖLÜM 4: KUTUPLAR", img: "oyun4.png", targets: [{x: 1549, y: 600, r:40}, {x: 1775, y: 841, r:40}, {x: 1484, y: 793, r:40}, {x: 1145, y: 982, r:40}, {x: 1263, y: 984, r:40}, {x: 1123, y: 684, r:40}] }
+            { title: "BÖLÜM 1: PARKLAR (8 Çöp)", img: "oyun1.png", targets: [
+               {x: 1177, y: 698, r: 50},
+               {x: 1234, y: 957, r: 50},
+               {x: 1341, y: 834, r: 50},
+               {x: 1514, y: 924, r: 50},
+               {x: 1712, y: 809, r: 50},
+               {x: 1757, y: 941, r: 50},
+               {x: 1866, y: 712, r: 50},
+               {x: 1730, y: 669, r: 50}
+            ]},
+            { title: "BÖLÜM 2: ÇÖLLER", img: "oyun2.png", targets: [
+                {x: 1383, y: 549, r: 50},
+                {x: 1267, y: 764, r: 50},
+                {x: 1765, y: 910, r: 50},
+                {x: 1695, y: 681, r: 50},
+                {x: 1619, y: 304, r: 50}
+            ]},
+            { title: "BÖLÜM 3: ORMANLAR", img: "oyun3.png", targets: [
+                {x: 1162, y: 451, r: 50},
+                {x: 1350, y: 735, r: 50},
+                {x: 1529, y: 980, r: 50},
+                {x: 1811, y: 807, r: 50},
+                {x: 1644, y: 611, r: 50}
+            ]},
+            { title: "BÖLÜM 4: SAHİLLER", img: "oyun4.png", targets: [
+                {x: 1255, y: 687, r: 50},
+                {x: 1465, y: 566, r: 50},
+                {x: 1658, y: 764, r: 50},
+                {x: 1796, y: 972, r: 50},
+                {x: 1138, y: 891, r: 50}
+            ]},
+            { title: "BÖLÜM 5: KUTUPLAR", img: "oyun5.png", targets: [
+                {x: 1059, y: 630, r: 50},
+                {x: 1146, y: 807, r: 50},
+                {x: 1683, y: 1040, r: 50},
+                {x: 1716, y: 724, r: 50},
+                {x: 1481, y: 914, r: 50}
+            ]},
+            { title: "BÖLÜM 6: SAHİLLER", img: "oyun6.png", targets: [
+                {x: 1366, y: 677, r: 50},
+                {x: 1065, y: 605, r: 50},
+                {x: 1695, y: 300, r: 50},
+                {x: 1403, y: 1005,r: 50},
+                {x: 1555, y: 477, r: 50}
+            ]},
+            { title: "BÖLÜM 7: ORMANLAR", img: "oyun7.png", targets: [
+                {x: 1506, y: 307, r: 50},
+                {x: 1331, y: 494, r: 50},
+                {x: 1543, y: 652, r: 50},
+                {x: 1825, y: 687, r: 50},
+                {x: 1265, y: 858, r: 50}
+            ]}
         ];
 
         function loadLevel(lv) {
             found = 0;
             const levelData = levels[lv-1];
             activeTargets = JSON.parse(JSON.stringify(levelData.targets));
-            
             document.getElementById('foundCount').innerText = 0;
             document.getElementById('totalCount').innerText = activeTargets.length;
             document.getElementById('title').innerText = levelData.title;
@@ -87,26 +113,21 @@
             ctx.drawImage(gameImg, 0, 0, 1920, 1080);
         };
 
-        // Hem tıklama hem dokunma desteği
         function handleInput(e) {
             const rect = canvas.getBoundingClientRect();
-            // Dokunma (Touch) veya Tıklama (Mouse) koordinatını al
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
             const mouseX = (clientX - rect.left) * (1920 / rect.width);
             const mouseY = (clientY - rect.top) * (1080 / rect.height);
 
-            if (mouseX < 960) return; // Sol tarafı koruma altına aldık, cırt yok
+            if (mouseX < 960) return;
 
             activeTargets.forEach(t => {
                 if (!t.found && Math.hypot(t.x - mouseX, t.y - mouseY) < t.r) {
                     t.found = true;
                     found++;
-                    
                     levelSound.currentTime = 0;
                     levelSound.play().catch(()=>{});
-                    
                     document.getElementById('foundCount').innerText = found;
                     drawMark(t.x, t.y, "yellow");
                     drawMark(t.x - 960, t.y, "lime");
@@ -134,7 +155,7 @@
         function victory() {
             winSound.currentTime = 0;
             winSound.play().catch(()=>{});
-            document.getElementById('message').innerHTML = "🏆 DÜNYA KURTARILDI! HARİKASIN!";
+            document.getElementById('message').innerHTML = "🏆 DÜNYA'YI KURTARDIN! HARİKASIN!";
             for(let i=0; i<60; i++) {
                 let d = document.createElement('div');
                 d.className = 'confetti';
